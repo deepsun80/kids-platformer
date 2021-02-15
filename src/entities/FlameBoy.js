@@ -11,7 +11,7 @@ class FlameBoy extends Phaser.GameObjects.Sprite {
     this.anims.play('flame-boy-idle');
 
     this.body.setCollideWorldBounds(true);
-    this.body.setSize(this.width - 80, 64);
+    this.body.setSize(this.width - 80, 80);
     this.body.setOffset(75, 0);
     this.body.setMaxVelocity(600, 600);
     this.body.setDragX(1800);
@@ -30,13 +30,12 @@ class FlameBoy extends Phaser.GameObjects.Sprite {
       transitions: [
         { 
           name: 'idle', 
-          // from: [ 'falling', 'running', 'pivoting' ], 
-          from: [ 'running', 'runningstart' ],
+          from: [ 'running', 'runningstart', 'jumping' ],
           to: 'idle' 
         },
         { 
           name: 'runstart', 
-          from: 'idle', 
+          from: [ 'idle', 'jumping' ], 
           to: 'runningstart' 
         },
         { 
@@ -50,16 +49,11 @@ class FlameBoy extends Phaser.GameObjects.Sprite {
         //   from: 'running', 
         //   to: 'pivoting' 
         // },
-        // { 
-        //   name: 'jump', 
-        //   from: [ 'idle', 'running', 'runningstart', 'pivoting' ], 
-        //   to: 'jumping' 
-        // },
-        // { 
-        //   name: 'fall', 
-        //   from: '*', 
-        //   to: 'falling' 
-        // }
+        { 
+          name: 'jump', 
+          from: '*', 
+          to: 'jumping' 
+        }
       ],
       methods: {
         onEnterState: (lifecycle) => {
@@ -79,9 +73,9 @@ class FlameBoy extends Phaser.GameObjects.Sprite {
       run: () => {
         return this.body.onFloor() && (this.body.velocity.x === 600 || this.body.velocity.x === -600);
       },
-      // jump: () => {
-      //   return this.body.velocity.y < 0;
-      // },
+      jump: () => {
+        return this.body.velocity.y < -599 || this.body.velocity.y > 599;
+      },
       // fall: () => {
       //   return this.body.velocity.y > 0;
       // }

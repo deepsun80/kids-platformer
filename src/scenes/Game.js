@@ -14,15 +14,27 @@ class Game extends Phaser.Scene {
   preload() {
     this.load.spritesheet('flame-boy-idle', 'assets/flame-boy-idle.png', {
       frameWidth: 128,
-      frameHeight: 64,
+      frameHeight: 80,
+    });
+    this.load.spritesheet('flame-boy-jump', 'assets/flame-boy-jump.png', {
+      frameWidth: 128,
+      frameHeight: 80,
+    });
+    this.load.spritesheet('flame-boy-land', 'assets/flame-boy-land.png', {
+      frameWidth: 128,
+      frameHeight: 80,
     });
     this.load.spritesheet('flame-boy-run-start', 'assets/flame-boy-run-start.png', {
       frameWidth: 128,
-      frameHeight: 64,
+      frameHeight: 80,
     });
     this.load.spritesheet('flame-boy-run', 'assets/flame-boy-run.png', {
       frameWidth: 128,
-      frameHeight: 64,
+      frameHeight: 80,
+    });
+    this.load.spritesheet('flame-boy-stop', 'assets/flame-boy-stop.png', {
+      frameWidth: 128,
+      frameHeight: 80,
     });
   }
 
@@ -38,6 +50,18 @@ class Game extends Phaser.Scene {
     });
 
     this.anims.create({
+      key: 'flame-boy-jumping',
+      frames: this.anims.generateFrameNumbers('flame-boy-jump'),
+      frameRate: 4,
+      repeat: -1
+    });
+
+    this.anims.create({
+      key: 'flame-boy-landing',
+      frames: this.anims.generateFrameNumbers('flame-boy-land'),
+    });
+
+    this.anims.create({
       key: 'flame-boy-runningstart',
       frames: this.anims.generateFrameNumbers('flame-boy-run-start'),
     });
@@ -47,6 +71,11 @@ class Game extends Phaser.Scene {
       frames: this.anims.generateFrameNumbers('flame-boy-run'),
       frameRate: 4,
       repeat: -1
+    });
+
+    this.anims.create({
+      key: 'flame-boy-stopping',
+      frames: this.anims.generateFrameNumbers('flame-boy-stop'),
     });
     /* -- End Animations -- */
 
