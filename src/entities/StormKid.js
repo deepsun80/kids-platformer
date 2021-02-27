@@ -1,26 +1,23 @@
 import Phaser from 'phaser';
 import StateMachine from 'javascript-state-machine';
 
-class FlameBoy extends Phaser.GameObjects.Sprite {
+class StormKid extends Phaser.GameObjects.Sprite {
  constructor(scene, x, y) {
-    super(scene, x, y, 'flame-boy-idle', 0);
+    super(scene, x, y, 'storm-kid-idle', 0);
 
     scene.add.existing(this);
     scene.physics.add.existing(this).setOrigin(0.5);
 
-    this.anims.play('flame-boy-idle');
+    this.anims.play('storm-kid-idle');
 
     this.body.setCollideWorldBounds(true);
-    this.body.setSize(this.width - 80, 80);
+    this.body.setSize(this.width - 85, 80);
     this.body.setOffset(75, 0);
     this.body.setMaxVelocity(450, 550);
     this.body.setDragX(1800);
 
     this.keys = scene.cursorKeys;
-    // this.input = {};
-
-    this.shoot = false;
-    this.keyboard = scene.input;
+    this.input = {};
 
     this.setupAnimations();
     this.setupMovement();
@@ -33,28 +30,23 @@ class FlameBoy extends Phaser.GameObjects.Sprite {
       transitions: [
         { 
           name: 'idle', 
-          from: [ 'running', 'jumping', 'shooting' ],
+          from: [ 'running', 'jumping' ],
           to: 'idle' 
         },
         { 
           name: 'run', 
-          from: [ 'idle', 'jumping', 'shooting' ], 
+          from: [ 'idle', 'jumping' ], 
           to: 'running' 
         },
         { 
           name: 'jump', 
           from: '*', 
           to: 'jumping' 
-        },
-        { 
-          name: 'shoot', 
-          from: '*', 
-          to: 'shooting' 
         }
       ],
       methods: {
         onEnterState: (lifecycle) => {
-          this.anims.play(`flame-boy-${lifecycle.to}`);
+          this.anims.play(`storm-kid-${lifecycle.to}`);
           console.log(lifecycle);
         },
       }
@@ -62,16 +54,13 @@ class FlameBoy extends Phaser.GameObjects.Sprite {
 
     this.animPredicates = {
       idle: () => {
-        return this.body.onFloor() && this.body.velocity.x === 0 && !this.shoot;
+        return this.body.onFloor() && this.body.velocity.x === 0;
       },
       run: () => {
-        return this.body.onFloor() && this.body.velocity.x !== 0 && !this.shoot;
+        return this.body.onFloor() && this.body.velocity.x !== 0;
       },
       jump: () => {
-        return !this.body.onFloor() && !this.shoot;
-      },
-      shoot: () => {
-        return this.shoot;
+        return !this.body.onFloor();
       }
     }
  }
@@ -113,15 +102,13 @@ class FlameBoy extends Phaser.GameObjects.Sprite {
     }
   }
 
- 
-
- preUpdate(time, delta) {
+  preUpdate(time, delta) {
     super.preUpdate(time, delta);
     // this.input.didPressJump = Phaser.Input.Keyboard.JustDown(this.keys.up);
 
     if (this.keys.left.isDown) {
       this.body.setAccelerationX(-3200);
-      this.body.offset.x = this.width - (this.width - 80) - 75;
+      this.body.offset.x = this.width - (this.width - 85) - 75;
       this.setFlipX(true);
     } else if (this.keys.right.isDown) {
       this.body.setAccelerationX(3200);
@@ -153,15 +140,7 @@ class FlameBoy extends Phaser.GameObjects.Sprite {
         break;
       }
     }
-
-    this.scene.input.keyboard.on('keydown_SPACE', () => {
-      this.shoot = true;
-    });
-
-    this.scene.input.keyboard.on('keyup_SPACE', () => {
-      this.shoot = false;
-    });
   }
 }
 
-export default FlameBoy;
+export default StormKid;
