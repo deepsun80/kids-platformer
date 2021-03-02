@@ -17,7 +17,12 @@ class Game extends Phaser.Scene {
     this.load.tilemapTiledJSON('level-1', 'assets/tilemaps/level-1.json');
 
     /* -- Tile sets -- */
-    this.load.image('volcano-tiles-sheet', 'assets/tilesets/volcano-tiles-64.png');
+    this.load.spritesheet('volcano-tiles-sheet', 'assets/tilesets/volcano-tiles-64.png', {
+      frameWidth: 64,
+      frameHeight: 64,
+      margin: 1,
+      spacing: 2
+    });
     this.load.image('bg-layer-1-sheet', 'assets/background/bg-layer-1.png');
     this.load.image('bg-layer-2-sheet', 'assets/background/bg-layer-2.png');
 
@@ -121,7 +126,7 @@ class Game extends Phaser.Scene {
   }
 
   addHero() {
-    this.player = new FlameBoy(this, -this.screenWidth, this.screenHeight / 2);
+    this.player = new FlameBoy(this, this.spawnPos.x, this.spawnPos.y);
     // this.player = new StormKid(this, this.screenWidth / 2, this.screenHeight / 1.4);
 
     this.physics.add.collider(this.player, this.map.getLayer('Ground').tilemapLayer);
@@ -139,11 +144,25 @@ class Game extends Phaser.Scene {
     bg2Layer.setScrollFactor(0.3);
     bg1Layer.setScrollFactor(0.6);
 
+    this.hazardGroup = this.physics.add.group({ immovable: true, allowGravity: false });
+
+    this.map.getObjectLayer('Objects').objects.forEach(object => {
+      if (object.name === 'Start') {
+        this.spawnPos = { x: object.x, y: object.y };
+      }
+
+      if (object.type === "Hazard") {
+        const hazard = this.hazardGroup.create(object.x, object.y, 'volcano-tiles-sheet', object.gid - 1);
+        hazard.setOrigin(0, 1);
+        hazard.setSize(object.width, object.height - 22);
+        hazard.setOffset(0, 20);
+      }
+    });
+
     const groundLayer = this.map.createStaticLayer('Ground', groundTiles);
     groundLayer.setCollisionBetween(1, 41, true);
 
     this.physics.world.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
-
     this.physics.world.setBoundsCollision(true, true, false, true);
 
     /* -- debug check on tiles -- */

@@ -6,13 +6,14 @@ class FlameBoy extends Phaser.GameObjects.Sprite {
     super(scene, x, y, 'flame-boy-idle', 0);
 
     scene.add.existing(this);
-    scene.physics.add.existing(this).setOrigin(0.5);
+    scene.physics.add.existing(this);
 
     this.anims.play('flame-boy-idle');
 
+    this.setOrigin(0.5, 1);
     this.body.setCollideWorldBounds(true);
-    this.body.setSize(this.width - 80, 80);
-    this.body.setOffset(75, 0);
+    this.body.setSize(this.width - 80, 70);
+    this.body.setOffset(75, 10);
     this.body.setMaxVelocity(450, 550);
     this.body.setDragX(1800);
 
