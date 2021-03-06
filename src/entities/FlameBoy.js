@@ -12,8 +12,8 @@ class FlameBoy extends Phaser.GameObjects.Sprite {
 
     this.setOrigin(0.5, 1);
     this.body.setCollideWorldBounds(true);
-    this.body.setSize(this.width - 80, 70);
-    this.body.setOffset(75, 10);
+    this.body.setSize(this.width - 90, 70);
+    this.body.setOffset(80, 10);
     this.body.setMaxVelocity(450, 550);
     this.body.setDragX(1800);
 
@@ -22,6 +22,8 @@ class FlameBoy extends Phaser.GameObjects.Sprite {
 
     this.shoot = false;
     this.keyboard = scene.input;
+
+    this.restart = false;
 
     this.setupAnimations();
     this.setupMovement();
@@ -44,19 +46,23 @@ class FlameBoy extends Phaser.GameObjects.Sprite {
         },
         { 
           name: 'jump', 
-          from: '*', 
+          from: [ 'idle', 'jumping', 'shooting', 'running' ], 
           to: 'jumping' 
         },
         { 
           name: 'shoot', 
-          from: '*', 
+          from: [ 'idle', 'jumping', 'shooting', 'running' ], 
           to: 'shooting' 
+        },
+        {
+          name: 'die',
+          from: [ 'idle', 'jumping', 'shooting', 'running' ],
+          to: 'dead'
         }
       ],
       methods: {
         onEnterState: (lifecycle) => {
           this.anims.play(`flame-boy-${lifecycle.to}`);
-          console.log(lifecycle);
         },
       }
     });
@@ -89,6 +95,11 @@ class FlameBoy extends Phaser.GameObjects.Sprite {
           from: [ 'jumping', 'falling' ], 
           to: 'idle' 
         },
+        {
+          name: 'die',
+          from: [ 'jumping', 'falling', 'idle' ],
+          to: 'dead'
+        }
       ],
       methods: {
         // onEnterState: (lifecycle) => {
@@ -96,6 +107,12 @@ class FlameBoy extends Phaser.GameObjects.Sprite {
         // },
         onJump: () => {
           this.body.setVelocityY(-550);
+        },
+        onDie: () => {
+          this.body.setVelocity(0, 0);
+          this.body.allowGravity = false;
+          this.body.setAcceleration(0);
+          this.body.setImmovable(true);
         }
       }
     });
@@ -103,7 +120,7 @@ class FlameBoy extends Phaser.GameObjects.Sprite {
     this.movePredicates = {
       jump: () => {
         // return this.input.didPressJump;
-        return this.keys.up.isDown;
+        return !this.isDead() && this.keys.up.isDown;
       },
       fall: () => {
         return !this.body.onFloor();
@@ -114,19 +131,27 @@ class FlameBoy extends Phaser.GameObjects.Sprite {
     }
   }
 
- 
+  kill() {
+    if(this.moveState.can('die')) {
+      this.moveState.die();
+      this.animState.die();
+    }
+  }
 
- preUpdate(time, delta) {
+  isDead() {
+    return this.moveState.is('dead');
+  }
+
+  preUpdate(time, delta) {
     super.preUpdate(time, delta);
     // this.input.didPressJump = Phaser.Input.Keyboard.JustDown(this.keys.up);
-
-    if (this.keys.left.isDown) {
+    if (!this.isDead() && this.keys.left.isDown) {
       this.body.setAccelerationX(-3200);
-      this.body.offset.x = this.width - (this.width - 80) - 75;
+      this.body.offset.x = this.width - (this.width - 90) - 80;
       this.setFlipX(true);
-    } else if (this.keys.right.isDown) {
+    } else if (!this.isDead() && this.keys.right.isDown) {
       this.body.setAccelerationX(3200);
-      this.body.offset.x = 75;
+      this.body.offset.x = 80;
       this.setFlipX(false);
     } else {
       this.body.setAccelerationX(0);
@@ -155,13 +180,19 @@ class FlameBoy extends Phaser.GameObjects.Sprite {
       }
     }
 
-    this.scene.input.keyboard.on('keydown_SPACE', () => {
+    !this.isDead() && this.scene.input.keyboard.on('keydown_SPACE', () => {
       this.shoot = true;
     });
 
-    this.scene.input.keyboard.on('keyup_SPACE', () => {
+    !this.isDead() && this.scene.input.keyboard.on('keyup_SPACE', () => {
       this.shoot = false;
     });
+
+    if (this.isDead()) {
+      setTimeout(() => {
+        this.restart = true;
+      }, 1000);
+    }
   }
 }
 
