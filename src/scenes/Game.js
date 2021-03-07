@@ -11,8 +11,8 @@ class Game extends Phaser.Scene {
 
     // SEE https://www.joshmorony.com/how-to-scale-a-game-for-all-device-sizes-in-phaser/
     // this.scaleRatio = window.devicePixelRatio / 2;
-    this.screenWidth = (window.innerWidth * window.devicePixelRatio) / 2;
-    this.screenHeight = (window.innerHeight * window.devicePixelRatio) / 2;
+    this.screenWidth = window.innerWidth;
+    this.screenHeight = window.innerHeight;
 
     this.lavaFireballGroup = [];
   }
