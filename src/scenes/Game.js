@@ -1,9 +1,6 @@
 import Phaser from 'phaser';
 import FlameBoy from '../entities/FlameBoy';
 import StormKid from '../entities/StormKid';
-import LavaBubble from '../props/LavaBubble';
-import LavaFireball from '../props/LavaFireball';
-import LavaSplash from '../props/LavaSplash';
 
 class Game extends Phaser.Scene {
   constructor() {
@@ -28,9 +25,9 @@ class Game extends Phaser.Scene {
       margin: 1,
       spacing: 2
     });
-    this.load.image('bg-layer-1-sheet', 'assets/background/level-2-bg-layer-1.png');
-    this.load.image('bg-layer-2-city-sheet', 'assets/background/level-2-bg-layer-2-city.png');
-    // this.load.image('bg-layer-2-clouds-sheet', 'assets/background/level-2-bg-layer-2-clouds.png');
+    this.load.image('level-2-bg-layer-1-sheet', 'assets/background/level-2-bg-layer-1.png');
+    this.load.image('level-2-bg-layer-2-sheet', 'assets/background/level-2-bg-layer-2.png');
+    this.load.image('level-2-bg-layer-3-sheet', 'assets/background/level-2-bg-layer-3.png');
 
     /* -- Props -- */
 
@@ -133,7 +130,7 @@ class Game extends Phaser.Scene {
     /* -- End Animations -- */
 
     var graphics = this.add.graphics();
-    graphics.fillGradientStyle(0x7c120f, 0x7c120f, 0xe5791f, 0xe5791f, 1);
+    graphics.fillGradientStyle(0x1616b0, 0x1616b0, 0x000, 0x000, 1);
     graphics.fillRect(0, 0, this.screenWidth, this.screenHeight);
     graphics.setScrollFactor(0);
 
@@ -151,15 +148,17 @@ class Game extends Phaser.Scene {
   addBackground() {
     this.map = this.make.tilemap({ key: 'level-2' });
 
-    const bg1Tiles = this.map.addTilesetImage('bg-layer-1', 'bg-layer-1-sheet', 64, 64);
-    const bg2Tiles = this.map.addTilesetImage('bg-layer-2-city', 'bg-layer-2-city-sheet', 64, 64);
-    // const bg3Tiles = this.map.addTilesetImage('bg-layer-2-clouds', 'bg-layer-2-clouds-sheet', 64, 64);
+    const bg1Tiles = this.map.addTilesetImage('level-2-bg-layer-1', 'level-2-bg-layer-1-sheet', 64, 64);
+    const bg2Tiles = this.map.addTilesetImage('level-2-bg-layer-2', 'level-2-bg-layer-2-sheet', 64, 64);
+    const bg3Tiles = this.map.addTilesetImage('level-2-bg-layer-3', 'level-2-bg-layer-3-sheet', 64, 64);
 
-    const bg2Layer = this.map.createStaticLayer('BackgroundLayer2', bg2Tiles);
     const bg1Layer = this.map.createStaticLayer('BackgroundLayer1', bg1Tiles);
-    
-    bg2Layer.setScrollFactor(0.3);
+    // const bg2Layer = this.map.createStaticLayer('BackgroundLayer2', bg2Tiles);
+    const bg3Layer = this.map.createStaticLayer('BackgroundLayer3', bg3Tiles);
+
     bg1Layer.setScrollFactor(0.6);
+    // bg2Layer.setScrollFactor(0.4);
+    bg3Layer.setScrollFactor(0.3);
   }
 
   addHero() {
@@ -202,8 +201,8 @@ class Game extends Phaser.Scene {
     this.physics.world.setBoundsCollision(true, true, false, true);
 
     /* -- debug check on tiles -- */
-    const debugGraphics = this.add.graphics();
-    groundLayer.renderDebug(debugGraphics);
+    // const debugGraphics = this.add.graphics();
+    // groundLayer.renderDebug(debugGraphics);
   }
 
 
