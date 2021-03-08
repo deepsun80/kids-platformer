@@ -233,14 +233,12 @@ class Game extends Phaser.Scene {
     const groundLayer = this.map.createStaticLayer('Ground', groundTiles);
     groundLayer.setCollisionBetween(1, 41, true);
 
-    console.log(groundLayer);
-
     this.physics.world.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
     this.physics.world.setBoundsCollision(true, true, false, true);
 
     /* -- debug check on tiles -- */
-    const debugGraphics = this.add.graphics();
-    groundLayer.renderDebug(debugGraphics);
+    // const debugGraphics = this.add.graphics();
+    // groundLayer.renderDebug(debugGraphics);
   }
 
 
