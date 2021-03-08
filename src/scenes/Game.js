@@ -19,36 +19,20 @@ class Game extends Phaser.Scene {
 
   preload() {
     /* -- Tile maps -- */
-    this.load.tilemapTiledJSON('level-1', 'assets/tilemaps/level-1.json');
+    this.load.tilemapTiledJSON('level-2', 'assets/tilemaps/level-2.json');
 
     /* -- Tile sets -- */
-    this.load.spritesheet('volcano-tiles-sheet', 'assets/tilesets/volcano-tiles-64.png', {
+    this.load.spritesheet('lab-tiles-sheet', 'assets/tilesets/lab-tiles-64.png', {
       frameWidth: 64,
       frameHeight: 64,
       margin: 1,
       spacing: 2
     });
-    this.load.image('bg-layer-1-sheet', 'assets/background/level-1-bg-layer-1.png');
-    this.load.image('bg-layer-2-sheet', 'assets/background/level-1-bg-layer-2.png');
+    this.load.image('bg-layer-1-sheet', 'assets/background/level-2-bg-layer-1.png');
+    this.load.image('bg-layer-2-city-sheet', 'assets/background/level-2-bg-layer-2-city.png');
+    // this.load.image('bg-layer-2-clouds-sheet', 'assets/background/level-2-bg-layer-2-clouds.png');
 
     /* -- Props -- */
-    this.load.spritesheet('lava-bubble-1', 'assets/props/lava-bubble-1.png', {
-      frameWidth: 64,
-      frameHeight: 64,
-    });
-    this.load.spritesheet('lava-bubble-2', 'assets/props/lava-bubble-2.png', {
-      frameWidth: 64,
-      frameHeight: 64,
-    });
-
-    this.load.spritesheet('lava-fireball-go', 'assets/props/lava-fireball-go.png', {
-      frameWidth: 64,
-      frameHeight: 64,
-    });
-    this.load.spritesheet('lava-splash', 'assets/props/lava-splash.png', {
-      frameWidth: 64,
-      frameHeight: 64,
-    });
 
     /* -- Flame boy -- */
     this.load.spritesheet('flame-boy-idle', 'assets/flame-boy/flame-boy-idle.png', {
@@ -91,27 +75,6 @@ class Game extends Phaser.Scene {
     this.cursorKeys = this.input.keyboard.createCursorKeys();
 
     /* -- Props Animations -- */
-    this.anims.create({
-      key: 'lava-bubble-1',
-      frames: this.anims.generateFrameNumbers('lava-bubble-1'),
-      frameRate: 4,
-      repeat: -1
-    });
-    this.anims.create({
-      key: 'lava-bubble-2',
-      frames: this.anims.generateFrameNumbers('lava-bubble-2'),
-      frameRate: 4,
-      repeat: -1
-    });
-
-    this.anims.create({
-      key: 'lava-fireball-go',
-      frames: this.anims.generateFrameNumbers('lava-fireball-go'),
-    });
-    this.anims.create({
-      key: 'lava-splash',
-      frames: this.anims.generateFrameNumbers('lava-splash'),
-    });
 
     /* -- Flame boy Animations -- */
     this.anims.create({
@@ -186,49 +149,51 @@ class Game extends Phaser.Scene {
   }
 
   addBackground() {
-    this.map = this.make.tilemap({ key: 'level-1' });
+    this.map = this.make.tilemap({ key: 'level-2' });
 
     const bg1Tiles = this.map.addTilesetImage('bg-layer-1', 'bg-layer-1-sheet', 64, 64);
-    const bg2Tiles = this.map.addTilesetImage('bg-layer-2', 'bg-layer-2-sheet', 64, 64);
+    const bg2Tiles = this.map.addTilesetImage('bg-layer-2-city', 'bg-layer-2-city-sheet', 64, 64);
+    // const bg3Tiles = this.map.addTilesetImage('bg-layer-2-clouds', 'bg-layer-2-clouds-sheet', 64, 64);
 
     const bg2Layer = this.map.createStaticLayer('BackgroundLayer2', bg2Tiles);
     const bg1Layer = this.map.createStaticLayer('BackgroundLayer1', bg1Tiles);
+    
     bg2Layer.setScrollFactor(0.3);
     bg1Layer.setScrollFactor(0.6);
   }
 
   addHero() {
-    this.player = new FlameBoy(this, this.spawnPos.x, this.spawnPos.y);
-    // this.player = new StormKid(this, this.screenWidth / 2, this.screenHeight / 1.4);
+    // this.player = new FlameBoy(this, this.spawnPos.x, this.spawnPos.y);
+    this.player = new StormKid(this, this.spawnPos.x, 500);
 
     this.cameras.main.startFollow(this.player);
 
     this.physics.add.collider(this.player, this.map.getLayer('Ground').tilemapLayer);
 
-    this.physics.add.overlap(this.player, this.hazardGroup, () => {
-      this.player.kill();
-    });
+    // this.physics.add.overlap(this.player, this.hazardGroup, () => {
+    //   this.player.kill();
+    // });
 
-    this.lavaFireballGroup.forEach(fireball => {
-      this.physics.add.collider(this.player, fireball, () => {
-        this.player.kill();
-      });
-    });
+    // this.lavaFireballGroup.forEach(fireball => {
+    //   this.physics.add.collider(this.player, fireball, () => {
+    //     this.player.kill();
+    //   });
+    // });
   }
 
   addMap() {
-    const groundTiles = this.map.addTilesetImage('volcano-tiles-64', 'volcano-tiles-sheet', 64, 64);
+    const groundTiles = this.map.addTilesetImage('lab-tiles-64', 'lab-tiles-sheet', 64, 64);
 
-    this.hazardGroup = this.physics.add.group({ immovable: true, allowGravity: false });
+    // this.hazardGroup = this.physics.add.group({ immovable: true, allowGravity: false });
     
-    this.map.getObjectLayer('Hazards').objects.forEach(object => {
-      if (object.type === "Hazard") {
-        const hazard = this.hazardGroup.create(object.x, object.y, 'volcano-tiles-sheet', object.gid - 1);
-        hazard.setOrigin(0, 1);
-        hazard.setSize(object.width, object.height - 22);
-        hazard.setOffset(0, 20);
-      }
-    });
+    // this.map.getObjectLayer('Hazards').objects.forEach(object => {
+    //   if (object.type === "Hazard") {
+    //     const hazard = this.hazardGroup.create(object.x, object.y, 'lab-tiles-sheet', object.gid - 1);
+    //     hazard.setOrigin(0, 1);
+    //     hazard.setSize(object.width, object.height - 22);
+    //     hazard.setOffset(0, 20);
+    //   }
+    // });
 
     const groundLayer = this.map.createStaticLayer('Ground', groundTiles);
     groundLayer.setCollisionBetween(1, 41, true);
@@ -237,50 +202,16 @@ class Game extends Phaser.Scene {
     this.physics.world.setBoundsCollision(true, true, false, true);
 
     /* -- debug check on tiles -- */
-    // const debugGraphics = this.add.graphics();
-    // groundLayer.renderDebug(debugGraphics);
+    const debugGraphics = this.add.graphics();
+    groundLayer.renderDebug(debugGraphics);
   }
 
 
-  addProps() {
-    this.lavaSplashGroup = this.physics.add.group({ immovable: true, allowGravity: false });
-    
+  addProps() {    
     this.map.getObjectLayer('Props').objects.forEach(object => {
       if (object.name === 'Start') {
         this.spawnPos = { x: object.x, y: object.y };
       }
-
-      if (object.name === "Lava-splash") {
-        const lavaSplash = this.lavaSplashGroup.create(object.x, object.y);
-        lavaSplash.setOrigin(1, 1);
-        lavaSplash.setSize(object.width, object.height - 5);
-        lavaSplash.setOffset(0, 32);
-        lavaSplash.setVisible(false);
-      }
-
-      if (object.name === "Lava-fireball") {
-        this.lavaFireball = new LavaFireball(this, object.x, object.y);
-        this.lavaFireballGroup.push(this.lavaFireball);
-      }
-
-      if (object.name === "Lava-bubble-1") {
-        new LavaBubble(this, object.x, object.y + 3, 1);
-      }
-      if (object.name === "Lava-bubble-2") {
-        new LavaBubble(this, object.x, object.y + 3, 0);
-      }
-    });
-
-    this.lavaFireballGroup.forEach(fireball => {
-      this.lavaSplashGroup.children.entries.forEach(splash => {
-        this.physics.add.collider(splash, fireball, () => {
-          const tempBubble = new LavaSplash(this, splash.body.x + 35, splash.body.y + 3);
-
-          setTimeout(() => {
-            tempBubble.destroy();
-          }, 300)
-        });
-      });
     });
   }
 
