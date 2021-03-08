@@ -28,8 +28,8 @@ class Game extends Phaser.Scene {
       margin: 1,
       spacing: 2
     });
-    this.load.image('bg-layer-1-sheet', 'assets/background/bg-layer-1.png');
-    this.load.image('bg-layer-2-sheet', 'assets/background/bg-layer-2.png');
+    this.load.image('bg-layer-1-sheet', 'assets/background/level-1-bg-layer-1.png');
+    this.load.image('bg-layer-2-sheet', 'assets/background/level-1-bg-layer-2.png');
 
     /* -- Props -- */
     this.load.spritesheet('lava-bubble-1', 'assets/props/lava-bubble-1.png', {
