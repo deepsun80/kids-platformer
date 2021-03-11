@@ -67,7 +67,7 @@ class Game extends Phaser.Scene {
       frameWidth: 128,
       frameHeight: 80,
     });
-    this.load.spritesheet('flame-boy-die', 'assets/flame-boy/flame-boy-hit.png', {
+    this.load.spritesheet('flame-boy-die', 'assets/flame-boy/flame-boy-die.png', {
       frameWidth: 128,
       frameHeight: 80,
     });
