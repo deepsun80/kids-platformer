@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
-import FlameBoy from '../entities/FlameBoy';
+// import FlameBoy from '../entities/FlameBoy';
 import StormKid from '../entities/StormKid';
+import Laser from '../props/Laser';
 
 class Game extends Phaser.Scene {
   constructor() {
@@ -27,9 +28,12 @@ class Game extends Phaser.Scene {
     });
     this.load.image('level-2-bg-layer-1-sheet', 'assets/background/level-2-bg-layer-1.png');
     this.load.image('level-2-bg-layer-2-sheet', 'assets/background/level-2-bg-layer-2.png');
-    this.load.image('level-2-bg-layer-3-sheet', 'assets/background/level-2-bg-layer-3.png');
 
     /* -- Props -- */
+    this.load.spritesheet('laser', 'assets/props/laser.png', {
+      frameWidth: 192,
+      frameHeight: 64,
+    });
 
     /* -- Flame boy -- */
     this.load.spritesheet('flame-boy-idle', 'assets/flame-boy/flame-boy-idle.png', {
@@ -48,7 +52,7 @@ class Game extends Phaser.Scene {
       frameWidth: 128,
       frameHeight: 80,
     });
-    this.load.spritesheet('flame-boy-die', 'assets/flame-boy/flame-boy-hit.png', {
+    this.load.spritesheet('flame-boy-die', 'assets/flame-boy/flame-boy-die.png', {
       frameWidth: 128,
       frameHeight: 80,
     });
@@ -66,12 +70,22 @@ class Game extends Phaser.Scene {
       frameWidth: 128,
       frameHeight: 80,
     });
+    this.load.spritesheet('storm-kid-die', 'assets/storm-kid/storm-kid-die.png', {
+      frameWidth: 128,
+      frameHeight: 80,
+    });
   }
 
   create(data) {
     this.cursorKeys = this.input.keyboard.createCursorKeys();
 
     /* -- Props Animations -- */
+    this.anims.create({
+      key: 'laser',
+      frames: this.anims.generateFrameNumbers('laser'),
+      frameRate: 4,
+      repeat: -1
+    });
 
     /* -- Flame boy Animations -- */
     this.anims.create({
@@ -127,6 +141,12 @@ class Game extends Phaser.Scene {
       frameRate: 4,
       repeat: -1
     });
+
+    this.anims.create({
+      key: 'storm-kid-dead',
+      frames: this.anims.generateFrameNumbers('storm-kid-die'),
+      frameRate: 6,
+    });
     /* -- End Animations -- */
 
     var graphics = this.add.graphics();
@@ -150,15 +170,12 @@ class Game extends Phaser.Scene {
 
     const bg1Tiles = this.map.addTilesetImage('level-2-bg-layer-1', 'level-2-bg-layer-1-sheet', 64, 64);
     const bg2Tiles = this.map.addTilesetImage('level-2-bg-layer-2', 'level-2-bg-layer-2-sheet', 64, 64);
-    const bg3Tiles = this.map.addTilesetImage('level-2-bg-layer-3', 'level-2-bg-layer-3-sheet', 64, 64);
 
     const bg1Layer = this.map.createStaticLayer('BackgroundLayer1', bg1Tiles);
-    // const bg2Layer = this.map.createStaticLayer('BackgroundLayer2', bg2Tiles);
-    const bg3Layer = this.map.createStaticLayer('BackgroundLayer3', bg3Tiles);
+    const bg2Layer = this.map.createStaticLayer('BackgroundLayer2', bg2Tiles);
 
     bg1Layer.setScrollFactor(0.6);
-    // bg2Layer.setScrollFactor(0.4);
-    bg3Layer.setScrollFactor(0.3);
+    bg2Layer.setScrollFactor(0.3);
   }
 
   addHero() {
@@ -210,6 +227,10 @@ class Game extends Phaser.Scene {
     this.map.getObjectLayer('Props').objects.forEach(object => {
       if (object.name === 'Start') {
         this.spawnPos = { x: object.x, y: object.y };
+      }
+
+      if (object.name === 'Laser') {
+        new Laser(this, object.x, object.y);
       }
     });
   }

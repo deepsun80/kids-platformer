@@ -11,8 +11,8 @@ class StormKid extends Phaser.GameObjects.Sprite {
     this.anims.play('storm-kid-idle');
 
     this.body.setCollideWorldBounds(true);
-    this.body.setSize(this.width - 85, 80);
-    this.body.setOffset(75, 0);
+    this.body.setSize(this.width - 85, 55);
+    this.body.setOffset(70, 25);
     this.body.setMaxVelocity(450, 550);
     this.body.setDragX(1800);
 
@@ -30,18 +30,23 @@ class StormKid extends Phaser.GameObjects.Sprite {
       transitions: [
         { 
           name: 'idle', 
-          from: [ 'running', 'jumping' ],
+          from: [ 'running', 'jumping', 'shooting' ],
           to: 'idle' 
         },
         { 
           name: 'run', 
-          from: [ 'idle', 'jumping' ], 
+          from: [ 'idle', 'jumping', 'shooting' ], 
           to: 'running' 
         },
         { 
           name: 'jump', 
-          from: '*', 
+          from: [ 'idle', 'jumping', 'shooting', 'running' ], 
           to: 'jumping' 
+        },
+        {
+          name: 'die',
+          from: [ 'idle', 'jumping', 'shooting', 'running' ],
+          to: 'dead'
         }
       ],
       methods: {
@@ -77,6 +82,11 @@ class StormKid extends Phaser.GameObjects.Sprite {
           from: [ 'jumping', 'falling' ], 
           to: 'idle' 
         },
+        {
+          name: 'die',
+          from: [ 'jumping', 'falling', 'idle' ],
+          to: 'dead'
+        }
       ],
       methods: {
         // onEnterState: (lifecycle) => {
@@ -84,6 +94,12 @@ class StormKid extends Phaser.GameObjects.Sprite {
         // },
         onJump: () => {
           this.body.setVelocityY(-550);
+        },
+        onDie: () => {
+          this.body.setVelocity(0, 0);
+          this.body.allowGravity = false;
+          this.body.setAcceleration(0);
+          this.body.setImmovable(true);
         }
       }
     });
@@ -102,17 +118,28 @@ class StormKid extends Phaser.GameObjects.Sprite {
     }
   }
 
+  kill() {
+    if(this.moveState.can('die')) {
+      this.moveState.die();
+      this.animState.die();
+    }
+  }
+
+  isDead() {
+    return this.moveState.is('dead');
+  }
+
   preUpdate(time, delta) {
     super.preUpdate(time, delta);
     // this.input.didPressJump = Phaser.Input.Keyboard.JustDown(this.keys.up);
 
-    if (this.keys.left.isDown) {
+    if (!this.isDead() && this.keys.left.isDown) {
       this.body.setAccelerationX(-3200);
-      this.body.offset.x = this.width - (this.width - 85) - 75;
+      this.body.offset.x = this.width - (this.width - 85) - 70;
       this.setFlipX(true);
-    } else if (this.keys.right.isDown) {
+    } else if (!this.isDead() && this.keys.right.isDown) {
       this.body.setAccelerationX(3200);
-      this.body.offset.x = 75;
+      this.body.offset.x = 70;
       this.setFlipX(false);
     } else {
       this.body.setAccelerationX(0);
@@ -139,6 +166,12 @@ class StormKid extends Phaser.GameObjects.Sprite {
         this.animState[t]();
         break;
       }
+    }
+
+    if (this.isDead()) {
+      setTimeout(() => {
+        this.restart = true;
+      }, 1000);
     }
   }
 }

@@ -145,6 +145,7 @@ class FlameBoy extends Phaser.GameObjects.Sprite {
   preUpdate(time, delta) {
     super.preUpdate(time, delta);
     // this.input.didPressJump = Phaser.Input.Keyboard.JustDown(this.keys.up);
+    
     if (!this.isDead() && this.keys.left.isDown) {
       this.body.setAccelerationX(-3200);
       this.body.offset.x = this.width - (this.width - 90) - 80;
