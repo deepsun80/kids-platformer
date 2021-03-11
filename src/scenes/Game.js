@@ -83,7 +83,7 @@ class Game extends Phaser.Scene {
     this.anims.create({
       key: 'laser',
       frames: this.anims.generateFrameNumbers('laser'),
-      frameRate: 4,
+      frameRate: 2,
       repeat: -1
     });
 
@@ -190,11 +190,11 @@ class Game extends Phaser.Scene {
     //   this.player.kill();
     // });
 
-    // this.lavaFireballGroup.forEach(fireball => {
-    //   this.physics.add.collider(this.player, fireball, () => {
-    //     this.player.kill();
-    //   });
-    // });
+    this.laserGroup.forEach(laser => {
+      this.physics.add.collider(this.player, laser, () => {
+        this.player.kill();
+      });
+    });
   }
 
   addMap() {
@@ -223,14 +223,17 @@ class Game extends Phaser.Scene {
   }
 
 
-  addProps() {    
+  addProps() {
+    this.laserGroup = [];
+
     this.map.getObjectLayer('Props').objects.forEach(object => {
       if (object.name === 'Start') {
         this.spawnPos = { x: object.x, y: object.y };
       }
 
       if (object.name === 'Laser') {
-        new Laser(this, object.x, object.y);
+        const laser = new Laser(this, object.x, object.y);
+        this.laserGroup.push(laser);
       }
     });
   }

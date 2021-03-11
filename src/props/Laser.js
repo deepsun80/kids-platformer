@@ -16,15 +16,18 @@ class Laser extends Phaser.GameObjects.Sprite {
     this.body.allowGravity = false;
     this.body.setSize(this.width, 30);
     this.body.setOffset(0, 18);
+    this.body.setImmovable(true);
+
+    this.body.velocity.y = (Math.round(Math.random()) * 2 - 1) * 100;
   }
 
   preUpdate(time, delta) {
     super.preUpdate(time, delta);
 
-    if (this.body.position.y <= this.startYPos - 40) {
+    if (this.body.position.y <= this.startYPos - 120) {
       this.body.velocity.y = 100;
     }
-    if (this.body.position.y >= this.startYPos + 80) {
+    if (this.body.position.y >= this.startYPos + 30) {
       this.body.velocity.y = -100;
     }
   }
