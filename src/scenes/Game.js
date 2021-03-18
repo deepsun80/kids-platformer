@@ -231,7 +231,7 @@ class Game extends Phaser.Scene {
         this.spawnPos = { x: object.x, y: object.y };
       }
 
-      if (object.name === 'Laser2') {
+      if (object.name === 'Laser') {
         const laser = new Laser(this, object.x, object.y);
         this.laserGroup.push(laser);
       }
