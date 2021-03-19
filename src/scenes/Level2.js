@@ -107,6 +107,19 @@ class Level2 extends Phaser.Scene {
     this.addHero();
 
     this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
+
+    const menuText = this.add.text(this.screenWidth - 10, 100, 'MENU', { fontSize: '28px', fill: '#FFF'});
+    menuText.setOrigin(1, 0);
+    menuText.setInteractive();
+    menuText.on('pointerover', () => {
+     menuText.setStyle({ fill: '#c8c8c8' });
+    });
+    menuText.on('pointerout', () => {
+      menuText.setStyle({ fill: '#fff' });
+    });
+    menuText.on('pointerup', () => {
+     this.scene.start('MenuScene');
+    });
   }
 
   addBackground() {
