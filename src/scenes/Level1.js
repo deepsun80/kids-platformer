@@ -1,13 +1,12 @@
 import Phaser from 'phaser';
 import FlameBoy from '../entities/FlameBoy';
-import StormKid from '../entities/StormKid';
 import LavaBubble from '../props/LavaBubble';
 import LavaFireball from '../props/LavaFireball';
 import LavaSplash from '../props/LavaSplash';
 
-class Game extends Phaser.Scene {
+class Level1 extends Phaser.Scene {
   constructor() {
-    super({ key: 'GameScene' });
+    super({ key: 'Level1Scene' });
 
     // SEE https://www.joshmorony.com/how-to-scale-a-game-for-all-device-sizes-in-phaser/
     // this.scaleRatio = window.devicePixelRatio / 2;
@@ -28,8 +27,8 @@ class Game extends Phaser.Scene {
       margin: 1,
       spacing: 2
     });
-    this.load.image('bg-layer-1-sheet', 'assets/background/level-1-bg-layer-1.png');
-    this.load.image('bg-layer-2-sheet', 'assets/background/level-1-bg-layer-2.png');
+    this.load.image('level-1-bg-layer-1-sheet', 'assets/background/level-1-bg-layer-1.png');
+    this.load.image('level-1-bg-layer-2-sheet', 'assets/background/level-1-bg-layer-2.png');
 
     /* -- Props -- */
     this.load.spritesheet('lava-bubble-1', 'assets/props/lava-bubble-1.png', {
@@ -68,20 +67,6 @@ class Game extends Phaser.Scene {
       frameHeight: 80,
     });
     this.load.spritesheet('flame-boy-die', 'assets/flame-boy/flame-boy-die.png', {
-      frameWidth: 128,
-      frameHeight: 80,
-    });
-
-    /* -- Storm kid -- */
-    this.load.spritesheet('storm-kid-idle', 'assets/storm-kid/storm-kid-idle.png', {
-      frameWidth: 128,
-      frameHeight: 80,
-    });
-    this.load.spritesheet('storm-kid-jump', 'assets/storm-kid/storm-kid-jump.png', {
-      frameWidth: 128,
-      frameHeight: 80,
-    });
-    this.load.spritesheet('storm-kid-run', 'assets/storm-kid/storm-kid-run.png', {
       frameWidth: 128,
       frameHeight: 80,
     });
@@ -145,28 +130,6 @@ class Game extends Phaser.Scene {
       frames: this.anims.generateFrameNumbers('flame-boy-die'),
       frameRate: 6,
     });
-
-    /* -- Storm kid Animations -- */
-    this.anims.create({
-      key: 'storm-kid-idle',
-      frames: this.anims.generateFrameNumbers('storm-kid-idle'),
-      frameRate: 4,
-      repeat: -1
-    });
-
-    this.anims.create({
-      key: 'storm-kid-jumping',
-      frames: this.anims.generateFrameNumbers('storm-kid-jump'),
-      frameRate: 4,
-      repeat: -1
-    });
-
-    this.anims.create({
-      key: 'storm-kid-running',
-      frames: this.anims.generateFrameNumbers('storm-kid-run'),
-      frameRate: 4,
-      repeat: -1
-    });
     /* -- End Animations -- */
 
     var graphics = this.add.graphics();
@@ -183,13 +146,26 @@ class Game extends Phaser.Scene {
     this.addHero();
 
     this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
+
+    const menuText = this.add.text(this.screenWidth - 10, 100, 'MENU', { fontSize: '28px', fill: '#FFF'});
+    menuText.setOrigin(1, 0);
+    menuText.setInteractive();
+    menuText.on('pointerover', () => {
+     menuText.setStyle({ fill: '#c8c8c8' });
+    });
+    menuText.on('pointerout', () => {
+      menuText.setStyle({ fill: '#fff' });
+    });
+    menuText.on('pointerup', () => {
+     this.scene.start('MenuScene');
+    });
   }
 
   addBackground() {
     this.map = this.make.tilemap({ key: 'level-1' });
 
-    const bg1Tiles = this.map.addTilesetImage('bg-layer-1', 'bg-layer-1-sheet', 64, 64);
-    const bg2Tiles = this.map.addTilesetImage('bg-layer-2', 'bg-layer-2-sheet', 64, 64);
+    const bg1Tiles = this.map.addTilesetImage('level-1-bg-layer-1', 'level-1-bg-layer-1-sheet', 64, 64);
+    const bg2Tiles = this.map.addTilesetImage('level-1-bg-layer-2', 'level-1-bg-layer-2-sheet', 64, 64);
 
     const bg2Layer = this.map.createStaticLayer('BackgroundLayer2', bg2Tiles);
     const bg1Layer = this.map.createStaticLayer('BackgroundLayer1', bg1Tiles);
@@ -292,4 +268,4 @@ class Game extends Phaser.Scene {
   }
 }
 
-export default Game;
+export default Level1;
