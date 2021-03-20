@@ -9,8 +9,8 @@ class Menu extends Phaser.Scene {
   }
 
   create() {
-    const menuItem1 = this.add.text(this.screenWidth / 2, (this.screenHeight / 2) - 50, 'FLAME BOY', { fontSize: '32px', fill: '#FFF'});
-    const menuItem2 = this.add.text(this.screenWidth / 2, (this.screenHeight / 2) + 50, 'STORM KID', { fontSize: '32px', fill: '#FFF'});
+    const menuItem1 = this.add.text(this.screenWidth / 2, (this.screenHeight / 2) - 50, 'FLAME BOY', { fontSize: '32px', fill: '#FFF', fontFamily: 'sans-serif' });
+    const menuItem2 = this.add.text(this.screenWidth / 2, (this.screenHeight / 2) + 50, 'STORM KID', { fontSize: '32px', fill: '#FFF', fontFamily: 'sans-serif' });
 
     menuItem1.setOrigin(0.5, 1);
     menuItem1.setInteractive();
